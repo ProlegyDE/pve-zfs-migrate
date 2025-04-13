@@ -165,6 +165,9 @@ Die Standardwerte für den SSH-Benutzer (`DEFAULT_SSH_USER`) und die ZFS-Pool-Ba
 *   **Fehlerbehandlung:** Das Skript versucht, robust zu sein, aber Netzwerk-, SSH- oder ZFS-Fehler können auftreten. Überprüfen Sie die Ausgabe sorgfältig.
 *   **Nach der Migration:** Überprüfen Sie den migrierten Gast auf dem Ziel-Host manuell (Starten, Funktionstest, Netzwerk). Eventuell müssen Netzwerkeinstellungen in der `.conf`\-Datei angepasst werden (z.B. andere Bridge). Wenn Sie `--set-target-noautosnap` verwendet haben, denken Sie daran, dass für diese Datasets keine automatischen Snapshots mehr erstellt werden, bis Sie die Property manuell zurücksetzen (z.B. `sudo zfs inherit com.sun:auto-snapshot <pool>/<dataset>`).
 
+## :balance_scale: Lizenz
+GPL-Lizenz - Siehe LICENSE für Details.
+
 ## :page_facing_up: Haftungsausschluss
 
 Diese Software (das Python-Skript `pve-zfs-migrate.py`) wird "**wie besehen**" ("as is") zur Verfügung gestellt, ohne jegliche ausdrückliche oder stillschweigende Gewährleistung oder Garantie, einschließlich, aber nicht beschränkt auf, die Gewährleistung der Marktgängigkeit oder der Eignung für einen bestimmten Zweck.
