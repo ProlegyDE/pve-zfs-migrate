@@ -1194,18 +1194,18 @@ if __name__ == "__main__":
         epilog="""Beispiele:
 
   Interaktiver Modus (stellt alle Fragen):
-    sudo python3 pve-zfs-migrate.py
+    sudo ./pve-zfs-migrate.py
 
   Nicht-interaktiv (alle Gäste, Standardpools, Bestätigung überspringen):
-    sudo python3 pve-zfs-migrate.py --host 192.168.1.10 --guests all -y
+    sudo ./pve-zfs-migrate.py --host 192.168.1.10 --guests all -y
 
   Nicht-interaktiv (spezifische Gäste, eigener Pool, neuen Snapshot erstellen):
-    sudo python3 pve-zfs-migrate.py --host pve-source --guests 101 105 200 \\
+    sudo ./pve-zfs-migrate.py --host pve-source --guests 101 105 200 \\
       --remote-pool tank/vmdata --local-pool backup/vmdata \\
       --create-snapshot -y
 
   Nicht-interaktiv (Auto-Snapshot auf Quelle *nicht* deaktivieren):
-    sudo python3 pve-zfs-migrate.py --host 10.0.0.5 --guests 110 --no-disable-source-autosnap -y
+    sudo ./pve-zfs-migrate.py --host 10.0.0.5 --guests 110 --no-disable-source-autosnap -y
 """
     )
 
