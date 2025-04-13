@@ -1,11 +1,14 @@
 
 # PVE ZFS Guest Migration Script
 
-## Beschreibung
+![Python Version](https://img.shields.io/badge/Python-3.6%2B-blue)
+![License](https://img.shields.io/badge/License-GPL-green)
+
+## :page_facing_up: Beschreibung
 
 Dieses Python-Skript dient zur Migration von Proxmox VE VMs und LXC-Containern, deren Speicher auf ZFS-Datasets basiert. Es migriert die Daten von einem Quell-PVE-Host zu dem Ziel-PVE-Host, auf dem das Skript ausgeführt wird. Der Transfer erfolgt durch inkrementelles Senden und Empfangen _aller_ vorhandenen ZFS-Snapshots für die ausgewählten Gäste und kopiert anschließend die Konfigurationsdatei des Gastes.
 
-## Features
+## :sparkles: Features
 
 *   Migriert PVE VMs und LXCs, die auf ZFS-Datasets gespeichert sind.
 *   Nutzt `zfs send` und `zfs recv` für effiziente, inkrementelle Übertragung aller Snapshots.
@@ -20,7 +23,7 @@ Dieses Python-Skript dient zur Migration von Proxmox VE VMs und LXC-Containern, 
 *   Farbige Ausgabe zur besseren Lesbarkeit.
 *   Testet die SSH-Verbindung vor Beginn.
 
-## Voraussetzungen
+## :package: Voraussetzungen
 
 ### Ziel-Host (wo das Skript läuft):
 
@@ -49,12 +52,12 @@ Konnektivität zwischen Quell- und Ziel-Host (SSH Port, typischerweise 22).
 
 Sowohl Quelle als auch Ziel müssen ZFS für die zu migrierenden Gast-Speicher verwenden.
 
-## Installation / Setup
+## :gear: Installation / Setup
 
 1.  Laden Sie das Skript (z.B. als `pve-zfs-migrate.py`) auf den **Ziel**\-PVE-Host herunter.
 2.  Machen Sie das Skript ausführbar: `chmod +x pve-zfs-migrate.py`.
 
-## Benutzung
+## :test_tube: Benutzung
 
 Das Skript muss mit `root`\-Rechten auf dem **Ziel**\-Host ausgeführt werden (z.B. via `sudo`).
 
@@ -109,11 +112,11 @@ Eine vollständige Liste der Optionen erhalten Sie mit:
 ./pve-zfs-migrate.py --help
 ```
 
-## Konfiguration
+## :hammer_and_wrench: Konfiguration
 
 Die Standardwerte für den SSH-Benutzer (`DEFAULT_SSH_USER`) und die ZFS-Pool-Basispfade (`DEFAULT_REMOTE_POOL_BASE`, `DEFAULT_LOCAL_POOL_BASE`) können am Anfang des Skripts angepasst werden. Es wird jedoch empfohlen, diese Werte über die Kommandozeilenargumente zu überschreiben.
 
-## Funktionsweise (vereinfacht)
+## :mag: Funktionsweise (vereinfacht)
 
 1.  **Verbindung & Vorbereitung:**
     *   Das Skript testet die SSH-Verbindung zur Quelle.
@@ -145,7 +148,7 @@ Die Standardwerte für den SSH-Benutzer (`DEFAULT_SSH_USER`) und die ZFS-Pool-Ba
     *   Optional (`--set-target-noautosnap`) wird die Property `com.sun:auto-snapshot=false` auf den _empfangenen_ Datasets auf dem Ziel gesetzt.
     *   Eine Zusammenfassung über Erfolg und Misserfolg der Gast-Migrationen wird ausgegeben.
 
-## Wichtige Hinweise & Warnungen
+## :warning: Wichtige Hinweise & Warnungen
 
 *   **Ziel-Host:** Das Skript **muss** auf dem Ziel-PVE-Host ausgeführt werden.
 *   **Berechtigungen:** Lokale `root`\-Rechte sind erforderlich. Der SSH-Benutzer auf der Quelle benötigt ausreichende ZFS-Rechte (normalerweise `root`).
@@ -158,7 +161,7 @@ Die Standardwerte für den SSH-Benutzer (`DEFAULT_SSH_USER`) und die ZFS-Pool-Ba
 *   **Fehlerbehandlung:** Das Skript versucht, robust zu sein, aber Netzwerk-, SSH- oder ZFS-Fehler können auftreten. Überprüfen Sie die Ausgabe sorgfältig.
 *   **Nach der Migration:** Überprüfen Sie den migrierten Gast auf dem Ziel-Host manuell (Starten, Funktionstest, Netzwerk). Eventuell müssen Netzwerkeinstellungen in der `.conf`\-Datei angepasst werden (z.B. andere Bridge). Wenn Sie `--set-target-noautosnap` verwendet haben, denken Sie daran, dass für diese Datasets keine automatischen Snapshots mehr erstellt werden, bis Sie die Property manuell zurücksetzen (z.B. `sudo zfs inherit com.sun:auto-snapshot <pool>/<dataset>`).
 
-## Haftungsausschluss
+## :shield: Haftungsausschluss
 
 Diese Software (das Python-Skript `pve-zfs-migrate.py`) wird "**wie besehen**" ("as is") zur Verfügung gestellt, ohne jegliche ausdrückliche oder stillschweigende Gewährleistung oder Garantie, einschließlich, aber nicht beschränkt auf, die Gewährleistung der Marktgängigkeit oder der Eignung für einen bestimmten Zweck.
 
