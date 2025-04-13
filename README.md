@@ -54,8 +54,11 @@ Sowohl Quelle als auch Ziel müssen ZFS für die zu migrierenden Gast-Speicher v
 
 ## :gear: Installation / Setup
 
-1.  Laden Sie das Skript (z.B. als `pve-zfs-migrate.py`) auf den **Ziel**\-PVE-Host herunter.
-2.  Machen Sie das Skript ausführbar: `chmod +x pve-zfs-migrate.py`.
+```bash
+git clone https://github.com/ProlegyDE/pve-zfs-migrate.git
+cd pve-zfs-migrate
+chmod +x pve-zfs-migrate.py
+```
 
 ## :rocket: Benutzung
 
