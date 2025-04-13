@@ -55,6 +55,7 @@ Sowohl Quelle als auch Ziel müssen ZFS für die zu migrierenden Gast-Speicher v
 ## :gear: Installation / Setup
 
 ```bash
+apt update && apt install pv
 git clone https://github.com/ProlegyDE/pve-zfs-migrate.git
 cd pve-zfs-migrate
 chmod +x pve-zfs-migrate.py
