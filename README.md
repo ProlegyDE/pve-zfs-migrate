@@ -170,17 +170,17 @@ GPL-Lizenz - Siehe LICENSE für Details.
 
 ## :page_facing_up: Haftungsausschluss
 
-Diese Software (das Python-Skript `pve-zfs-migrate.py`) wird "**wie besehen**" ("as is") zur Verfügung gestellt, ohne jegliche ausdrückliche oder stillschweigende Gewährleistung oder Garantie, einschließlich, aber nicht beschränkt auf, die Gewährleistung der Marktgängigkeit oder der Eignung für einen bestimmten Zweck.
+Diese Software (das Python-Skript `pve-zfs-migrate.py`) wird **wie besehen** ("as is") bereitgestellt – ohne jegliche Garantie, insbesondere hinsichtlich Marktgängigkeit oder Eignung für einen bestimmten Zweck.
 
-**Die Nutzung dieses Skripts erfolgt ausschließlich auf Ihr eigenes Risiko.**
+**Nutzung auf eigenes Risiko:**  
+Das Skript führt potenziell **destruktive Operationen** aus (z. B. `zfs recv -F` zum Überschreiben von Datasets oder Konfigurationsdateien). Fehler, Missverständnisse oder Fehlkonfigurationen können zu **dauerhaftem Datenverlust, Systeminstabilität und weiteren Schäden** führen.
 
-Das Skript führt potenziell **destruktive Operationen** durch, insbesondere im Zusammenhang mit ZFS-Datasets (z.B. durch `zfs recv -F`, welches Ziel-Datasets überschreiben kann) und dem Überschreiben von Konfigurationsdateien. Fehler im Skript, Fehlkonfigurationen, Missverständnisse der Funktionsweise oder unsachgemäße Anwendung können zu **schwerwiegendem und permanentem Datenverlust**, Systeminstabilität, Betriebsunterbrechungen oder anderen unvorhergesehenen Schäden führen.
+**Haftungsausschluss:**  
+Die Autoren, Mitwirkenden und Verteiler haften **in keinem Fall** für Schäden (direkt, indirekt, zufällig oder Folgeschäden wie Datenverlust, Systemschäden, Betriebsunterbrechung oder entgangenen Gewinn).
 
-**In keinem Fall haften** die Autoren, Mitwirkenden oder Personen, die die Software verbreiten, für Schäden jeglicher Art (einschließlich, aber nicht beschränkt auf, direkte, indirekte, zufällige, besondere, exemplarische oder Folgeschäden, wie z.B. Datenverlust, Beschädigung von Systemen, Betriebsunterbrechung, entgangenen Gewinn oder andere finanzielle oder materielle Verluste), die sich aus der Nutzung, der versuchten Nutzung oder der Unmöglichkeit der Nutzung der Software ergeben, selbst wenn auf die Möglichkeit solcher Schäden hingewiesen wurde.
+**Verantwortung des Nutzers:**  
+- Die Funktionsweise des Skripts sowie die Auswirkungen der Optionen vollständig verstehen.  
+- Vor dem Einsatz in kritischen Umgebungen das Skript in einer isolierten Testumgebung evaluieren.  
+- Vollständige, aktuelle und geprüfte Backups aller relevanten Daten und Systeme anfertigen.
 
-Es liegt in der **alleinigen Verantwortung des Benutzers**:
-*   Die Funktionsweise des Skripts und die Auswirkungen der gewählten Optionen **vollständig zu verstehen**, bevor es ausgeführt wird.
-*   Das Skript vor dem Einsatz in einer produktiven, kritischen oder anderweitig wichtigen Umgebung **gründlich in einer isolierten und sicheren Testumgebung** zu evaluieren.
-*   Sicherzustellen, dass **vollständige, aktuelle und überprüfte Backups** aller relevanten Daten, Konfigurationen und Systeme vorhanden sind, _bevor_ das Skript ausgeführt wird.
-
-Durch das Herunterladen, Kopieren, Ausführen oder anderweitige Nutzen dieser Software erklären Sie sich ausdrücklich mit diesem Haftungsausschluss einverstanden und erkennen an, dass Sie die damit verbundenen Risiken verstehen und akzeptieren. Wenn Sie mit diesen Bedingungen nicht einverstanden sind, dürfen Sie die Software nicht verwenden.
+Mit dem Herunterladen, Kopieren oder Nutzen dieser Software erklären Sie sich mit diesem Haftungsausschluss einverstanden. Wenn Sie diese Bedingungen nicht akzeptieren, dürfen Sie das Skript nicht verwenden.
