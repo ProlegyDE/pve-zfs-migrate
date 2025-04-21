@@ -123,7 +123,7 @@ def run_remote_command(host, user, cmd, check=True, quiet=False):
     """Führt einen Befehl auf dem entfernten Host via SSH aus."""
     remote_shell_cmd = ["bash", "-s"]
     ssh_cmd = ["ssh",
-               "-o", "BatchMode=yes",
+               "-o", "BatchMode=yes", # Wichtig für nicht-interaktive Ausführung
                "-o", "ConnectTimeout=10",
                f"{user}@{host}",
                "--"] + remote_shell_cmd
@@ -138,6 +138,7 @@ def run_remote_command(host, user, cmd, check=True, quiet=False):
             capture_output=True,
             text=True,
             errors='replace',
+            # Kein Timeout hier, da der *Remote-Befehl* lange dauern kann. ConnectTimeout oben ist für die Verbindung.
         )
         return result.stdout.strip()
 
@@ -145,18 +146,9 @@ def run_remote_command(host, user, cmd, check=True, quiet=False):
         print_error("[!] Fehler: Befehl 'ssh' nicht gefunden. Ist er im PATH?")
         if check: sys.exit(1)
         return None
-    except subprocess.TimeoutExpired as e:
-        if not quiet:
-            print_error(f"[!] SSH/'bash -s'-Befehl Timeout überschritten: {' '.join(e.cmd)}")
-            input_cmd_display = cmd
-            try:
-                if e.input: input_cmd_display = e.input.strip()
-            except: pass
-            print_error(f"    Befehl (via stdin): {input_cmd_display}")
-            if e.stdout: print_warning(f"    Ausgabe bisher (stdout): {e.stdout.strip()}")
-            if e.stderr: print_warning(f"    Fehler bisher (stderr): {e.stderr.strip()}")
-        if check: sys.exit("Remote-Kommando Timeout.")
-        return None
+    # TimeoutExpired ist hier weniger wahrscheinlich, da wir keinen Timeout in subprocess.run setzen
+    # except subprocess.TimeoutExpired as e: ... (kann bei Bedarf hinzugefügt werden)
+
     except subprocess.CalledProcessError as e:
         if not quiet:
             print_error(f"[!] SSH/'bash -s'-Befehl fehlgeschlagen (Code {e.returncode}): {' '.join(e.cmd)}")
@@ -167,16 +159,52 @@ def run_remote_command(host, user, cmd, check=True, quiet=False):
             print_error(f"    Befehl (via stdin): {input_cmd_display}")
             stderr_msg = e.stderr.strip() if e.stderr else "(Keine stderr Ausgabe)"
             print_error(f"    Fehler: {stderr_msg}")
+
+            # --- BEGINN DER ÄNDERUNG ---
             if "Permission denied" in stderr_msg or "publickey" in stderr_msg:
-                print_warning("    -> Möglicherweise ein SSH-Authentifizierungsproblem (Passwort/Schlüssel?).")
+                print_warning("    -> SSH-Authentifizierungsproblem (Passwort/Schlüssel?) erkannt.")
+                try:
+                    # Frage den Benutzer, ob ssh-copy-id ausgeführt werden soll
+                    user_input = prompt_user(f"[?] Soll versucht werden, den SSH-Schlüssel mit 'ssh-copy-id {user}@{host}' zu kopieren? (j/N): ").strip().lower()
+                    if user_input == 'j':
+                        print_info(f"[*] Versuche 'ssh-copy-id' für {user}@{host} auszuführen...")
+                        ssh_copy_cmd = ["ssh-copy-id", f"{user}@{host}"]
+                        # Führe ssh-copy-id lokal aus. check=False, da ssh-copy-id selbst fehlschlagen kann.
+                        copy_result = run_command(ssh_copy_cmd, check=False, capture_output=True)
+
+                        if copy_result is not None and copy_result.returncode == 0:
+                            print_success(f"[+] 'ssh-copy-id' für {user}@{host} wurde scheinbar erfolgreich ausgeführt.")
+                            print_warning("[!] Bitte versuchen Sie, das Skript erneut auszuführen.")
+                        else:
+                            print_error(f"[!] 'ssh-copy-id' für {user}@{host} ist fehlgeschlagen oder wurde abgebrochen.")
+                            if copy_result and copy_result.stderr:
+                                print_error(f"    Fehler von ssh-copy-id: {copy_result.stderr.strip()}")
+                            elif copy_result and copy_result.stdout: # Manchmal landet die Fehlermeldung auch in stdout
+                                print_error(f"    Ausgabe von ssh-copy-id: {copy_result.stdout.strip()}")
+                            print_warning("[!] Bitte überprüfen Sie die SSH-Konfiguration manuell und versuchen Sie es erneut.")
+                        # Nach dem Versuch (erfolgreich oder nicht), beenden wir das Skript.
+                        # Der Benutzer muss es neu starten, um die geänderte Konfiguration zu nutzen.
+                        sys.exit(1) # Beende mit Fehlercode, da der ursprüngliche Befehl fehlschlug
+                    else:
+                        print_info("[*] 'ssh-copy-id' wird nicht ausgeführt.")
+                        # Fahre mit der normalen Fehlerbehandlung fort (führt zu sys.exit, wenn check=True)
+
+                except Exception as inner_e:
+                    print_error(f"[!] Unerwarteter Fehler während der ssh-copy-id Interaktion: {inner_e}")
+                    # Fahre mit der normalen Fehlerbehandlung fort
+
+            # --- ENDE DER ÄNDERUNG ---
+
             elif "Could not resolve hostname" in stderr_msg:
                 print_warning("    -> Hostname konnte nicht aufgelöst werden. Überprüfe Namen/IP und Netzwerk.")
             elif "connect to host" in stderr_msg and "port 22" in stderr_msg:
                  print_warning("    -> Verbindung zu Port 22 fehlgeschlagen. Läuft SSHD auf dem Host? Firewall?")
             else:
-                print_warning("    -> Der Befehl auf dem Remote-Host (innerhalb von 'bash -s') ist fehlgeschlagen.")
-        # sys.exit wird durch check=True ausgelöst
-        return None
+                print_warning("    -> Der Befehl auf dem Remote-Host (innerhalb von 'bash -s') ist fehlgeschlagen oder ein anderes SSH-Problem.")
+
+        if check: # Wird nur erreicht, wenn ssh-copy-id nicht ausgeführt wurde oder fehlschlug
+            sys.exit("Remote-Kommando fehlgeschlagen.") # Beende das Skript
+        return None # Wird nur erreicht, wenn check=False ist
     except Exception as e:
         print_error(f"[!] Unerwarteter Fehler beim Ausführen von {' '.join(ssh_cmd)} mit Input '{cmd}': {e}")
         if check and not quiet:
